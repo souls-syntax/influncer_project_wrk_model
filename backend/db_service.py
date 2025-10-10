@@ -12,13 +12,13 @@ def get_mongo_collection():
         client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
         client.admin.command('ping')
         db = client[DB_NAME]
-        print(" MongoDB Connection Successful!")
+        print("✅ MongoDB Connection Successful!")
         return db[COLLECTION_NAME]
     except Exception as e:
-        print(f" FATAL ERROR: Could not connect to MongoDB. {e}")
+        print(f"❌ FATAL ERROR: Could not connect to MongoDB. {e}")
         return None
 
-def get_influencers_by_criteria(search_term="", min_subs=0, location=""):
+def get_influencers_by_criteria(category="", min_subs=0, max_subs=0):
     collection = get_mongo_collection()
     if collection is None:
         return []
@@ -26,37 +26,35 @@ def get_influencers_by_criteria(search_term="", min_subs=0, location=""):
     try:
         query_parts = []
         
+        # --- YAHAN BADLAV KIYA GAYA HAI ---
+        # Subscribers ke liye min aur max, dono ko handle karne ka code
+        sub_query = {}
         if min_subs > 0:
-            query_parts.append({'subscribers': {'$gte': min_subs}})
+            sub_query['$gte'] = min_subs  # gte = Greater than or equal to
+        if max_subs > 0:
+            sub_query['$lte'] = max_subs  # lte = Less than or equal to
+        if sub_query:
+            query_parts.append({'subscribers': sub_query})
         
-        if location:
-            query_parts.append({'location': {"$regex": location, "$options": "i"}})
+        # Category ke liye search query
+        if category:
+            # Humne '$or' hata diya hai taaki sirf category field mein search ho
+            query_parts.append({'category': {"$regex": category, "$options": "i"}})
 
-        if search_term:
-            regex = {"$regex": search_term, "$options": "i"}
-            query_parts.append({
-                '$or': [
-                    {'category': regex}, 
-                    {'name': regex},
-                    {'ai_niche': regex}
-                ]
-            })
-
+        # Final query banayein
         query = {}
         if query_parts:
             query['$and'] = query_parts
 
-        # --- YAHAN PAR ASLI FIX KIYA GAYA HAI ---
-        # Humne `_id: 0` ko hata diya hai. Ab saara data aayega.
         results = list(collection.find(query))
-
-        # Yeh extra step sunishchit karega ki frontend ko hamesha 'id' mile
+        
+        processed_results = []
         for doc in results:
             if '_id' in doc:
-                # ObjectId ko string mein badal do, kyunki JSON use handle nahi kar sakta
                 doc['_id'] = str(doc['_id'])
-        
-        return results
+            processed_results.append(doc)
+            
+        return processed_results
 
     except Exception as e:
         print(f"❌ Error fetching influencers: {e}")
@@ -67,8 +65,9 @@ def get_influencer_by_id(influencer_id):
     if collection is None:
         return None
     try:
-        # Hum 'id' field par hi search karenge, jaisa aapne fetch.py mein banaya hai
-        doc = collection.find_one({'id': influencer_id}, {'_id': 0})
+        doc = collection.find_one({'id': influencer_id})
+        if doc and '_id' in doc:
+            doc['_id'] = str(doc['_id'])
         return doc
     except Exception as e:
         print(f"❌ Error fetching single influencer: {e}")

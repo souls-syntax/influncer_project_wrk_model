@@ -1,3 +1,5 @@
+# influncer_project/backend/core_api/views.py
+
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -7,17 +9,24 @@ from db_service import get_influencers_by_criteria, get_influencer_by_id
 @permission_classes([IsAuthenticated])
 def influencer_list(request):
     """API endpoint jo MongoDB se asli data laakar deta hai."""
-    search_term = request.GET.get('search_term', '')
-    location = request.GET.get('location', '') # Location parameter ko get karein
+    
+    # --- YAHAN BADLAV KIYA GAYA HAI ---
+    # Frontend se aa rahe sahi parameter naamo ko yahan get karein
+    category = request.GET.get('category', '')
     try:
-        min_subs = int(request.GET.get('min_subs', 0))
+        min_subs = int(request.GET.get('min_subscribers', 0))
     except (ValueError, TypeError):
         min_subs = 0
+    try:
+        max_subs = int(request.GET.get('max_subscribers', 0))
+    except (ValueError, TypeError):
+        max_subs = 0
     
+    # Sahi parameters ko database function mein pass karein
     influencers = get_influencers_by_criteria(
-        search_term=search_term,
+        category=category,
         min_subs=min_subs,
-        location=location # Function ko location pass karein
+        max_subs=max_subs
     )
     return Response(influencers)
 
