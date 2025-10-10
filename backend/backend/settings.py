@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     #===========external apps===========
     'rest_framework',
     'corsheaders',
+    'rest_framework_simplejwt',
 
 ]
 

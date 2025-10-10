@@ -13,13 +13,13 @@ TARGET_CATEGORIES = {
     "Fitness": "workout routine OR healthy eating OR fitness tips",
     "Food Vlogging": "easy recipes OR cooking challenge OR street food review",
 }
-COUNT_PER_CATEGORY = 3
+COUNT_PER_CATEGORY = 10
 
 def get_youtube_client():
     try:
         return build('youtube', 'v3', developerKey=YOUTUBE_API_KEY)
     except Exception as e:
-        print(f"❌ Failed to initialize YouTube Client: {e}")
+        print(f" Failed to initialize YouTube Client: {e}")
         sys.exit(1)
 
 def clean_text(text: str) -> str:
@@ -91,11 +91,11 @@ def run_data_collection():
     mongo_collection = get_mongo_collection()
     
     if mongo_collection is None: 
-        print("❌ Cannot proceed without MongoDB connection.")
+        print(" Cannot proceed without MongoDB connection.")
         return
 
     for category, query in TARGET_CATEGORIES.items():
-        print(f"\n🚀 Starting search for category: '{category}'...")
+        print(f"\n Starting search for category: '{category}'...")
         search_request = youtube.search().list(
             q=query, type='channel', part='id', maxResults=COUNT_PER_CATEGORY
         ).execute()
@@ -106,7 +106,7 @@ def run_data_collection():
                 print(f"  - Found channel: {channel_info['name']}")
                 db_document = prepare_data_for_db(channel_info, videos_data, category)
                 
-                print(f"    🧠 Analyzing with AI...")
+                print(f"     Analyzing with AI...")
                 ai_results = classify_influencer(db_document['ai_prompt_text'])
                 
                 # AI se mile naye data ko add karein
@@ -117,9 +117,9 @@ def run_data_collection():
                 db_document['ai_recommendation'] = ai_results.get('recommendation', 'Not Recommended')
                 
                 mongo_collection.update_one({'id': db_document['id']}, {'$set': db_document}, upsert=True)
-                print(f"    ✅ Saved to database with AI analysis.")
+                print(f"     Saved to database with AI analysis.")
             time.sleep(1)
-    print("\n\n✨ Data collection complete! ✨")
+    print("\n\n Data collection complete! ")
 
 if __name__ == '__main__':
     run_data_collection()
