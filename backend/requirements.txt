@@ -1,0 +1,16 @@
+# Django Framework
+Django
+djangorestframework
+djangorestframework-simplejwt
+django-cors-headers
+
+# Database
+pymongo
+
+# Google APIs
+google-api-python-client
+
+# Environment Variables
+python-dotenv
+
+google-generativeai

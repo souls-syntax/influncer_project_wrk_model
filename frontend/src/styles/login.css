@@ -1,0 +1,147 @@
+/* login.css */
+
+/* --- Variable Definitions --- */
+:root {
+  --primary-color: #6a11cb;
+  --secondary-color: #2575fc;
+  --background-start: #f4f6f9;
+  --background-end: #e9ecef;
+  --container-bg: #ffffff;
+  --text-primary: #212529;
+  --text-secondary: #6c757d;
+  --border-color: #dee2e6;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* --- General & Body Styles --- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-image: linear-gradient(135deg, var(--background-start) 0%, var(--background-end) 100%);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+/* --- Login Container (ID) --- */
+#login-container {
+  background: var(--container-bg);
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+  border-top: 5px solid;
+  border-image: linear-gradient(to right, var(--primary-color), var(--secondary-color)) 1;
+}
+
+/* --- Reusable Classes for Header Elements --- */
+.login-header {
+  margin-bottom: 1.5rem;
+}
+
+.logo {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto;
+  /* Example: background: #eee url('path/to/logo.svg') no-repeat center; */
+}
+
+h2 {
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 16px;
+  margin-bottom: 2rem;
+}
+
+/* --- Login Form (ID) & Input Groups (Class) --- */
+#login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  text-align: left;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-bottom: 0.5rem;
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+input[type="text"],
+input[type="password"] {
+  padding: 12px 15px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 16px;
+  color: var(--text-primary);
+  background-color: #f8f9fa;
+  transition: all 0.2s ease-in-out;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+  outline: none;
+  background-color: var(--container-bg);
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 0 3px rgba(37, 117, 252, 0.15);
+}
+
+/* --- Buttons (ID for primary, Class for secondary) --- */
+#submit-button {
+  padding: 14px;
+  background-image: linear-gradient(to right, var(--primary-color) 0%, var(--secondary-color) 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: all 0.3s ease;
+  background-size: 200% auto;
+}
+
+#submit-button:hover {
+  background-position: right center;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+#submit-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: translateY(0);
+}
+
+/* --- Error Message Styling --- */
+.error-message {
+  color: #d93025;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 8px;
+  padding: 10px 15px;
+  margin-top: 1rem;
+  font-size: 14px;
+  text-align: center;
+}
